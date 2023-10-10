@@ -1,0 +1,4 @@
+agent_path : "/opt/azagent/A1/"
+src_download: "https://hub.ir/repository/agent/2.210.1/vsts-agent-linux-x64-2.210.1.tar.gz"
+agenthostname: "hostname -s"
+agent_name: "test"
