@@ -1,0 +1,48 @@
+---
+- name:  configuration
+  shell: |
+    sudo usermode -aG sudo ubuntu
+    mkdir -p "{{agent_path}}"
+    chown ubuntu "{{agent_path}}"
+    chgrp -R "ubuntu" "{{agent_path}}"
+  tags: [pre-configuration]
+
+- name: Download vsts-agent-linux File
+  get_url:
+    url: "{{ src_download }}"
+    dest: "{{agent_path}}"
+    mode: '1777'
+  become: true
+  become_user: ubuntu  
+  tags: [download_agentfile]
+
+- name: Decompress GZ Files in vsts-agent-linux-x64-2.210.1.tar.gz
+  unarchive:
+    remote_src: yes      
+    src: "{{agent_path}}/vsts-agent-linux-x64-2.210.1.tar.gz" 
+    dest: "{{agent_path}}"  
+  become: true
+  become_user: ubuntu  
+  tags: [unarchive_agentfile]
+
+- name: Config The Agent 
+  shell: ./config.sh --unattended --environment --environmentname "test" --acceptteeeula --agent  "test" --url https://azureDevops --work _work --collectionname 'test' --projectname 'test' --auth PAT  --token yourtoken --runasservice 
+  args: 
+    chdir: "{{agent_path}}"
+  become: true
+  become_user: ubuntu 
+  tags: [config_agent]
+
+
+- name: Start service 
+  shell: |
+    cd "{{agent_path}}" 
+    sudo ./svc.sh install root
+    sudo ./svc.sh start 
+  become: true
+  become_user: ubuntu   
+  tags: [start_agent]    
+
+
+
+
