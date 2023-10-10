@@ -1,0 +1,13 @@
+---
+- name: Stop all container
+  docker_container: 
+    state: stopped
+
+
+- name: Create all network
+  docker_network:
+    state: absent
+
+- name: start all container
+  docker_container:
+    state: started
