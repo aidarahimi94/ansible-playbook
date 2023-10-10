@@ -1,0 +1,32 @@
+    - name: Update apt package cache
+      become: yes
+      apt:
+        update_cache: yes
+
+    - name: Install Docker CE, Docker CLI, Containerd, and Docker Compose Plugin
+      become: yes
+      apt:
+        name:
+          - docker-ce
+          - docker-ce-cli
+          - containerd.io
+          - docker-compose-plugin
+        state: present
+
+    - name: Start Docker service
+      become: yes
+      service:
+        name: docker
+        state: started
+
+    - name: Enable Docker service on boot
+      become: yes
+      systemd:
+        name: docker
+        enabled: yes
+
+    - name: Log into private registry 
+      docker_login:
+        registry: repo
+        username: user
+        password: pass
